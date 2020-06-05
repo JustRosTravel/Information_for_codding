@@ -1,0 +1,28 @@
+volatile - применяется в мнопоточности для того, чтобы информация была записана не в кеш ядра процессара, а в основную память
+с которой кеш сравнивает значения. Таким образом позволяет со 100% вероятностью работать корректно и без сбоев. Пример:
+
+Horse whiteHorse = new Horse();
+whiteHorse.start();
+
+Scanner scanner = new Scanner(System.in);
+scanner.nextLine();
+
+whiteHorse.stop();
+
+
+public staic class Horse() extend Thread {
+privat boolean check = true;
+
+  public void run() {
+    while(check) {
+      System.out.println("иго-го");
+      try {
+          Thread.sleep(500);
+        } catch (InterruptedException e) {
+        }
+  }
+}
+  
+  public void stop() {
+    this.check - false;
+}
