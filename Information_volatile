@@ -13,7 +13,7 @@ whiteHorse.stop();
 
 
 public staic class Horse() extend Thread {
-privat boolean check = true;
+privat volatile boolean check = true;
 
   public void run() {
     while(check) {
