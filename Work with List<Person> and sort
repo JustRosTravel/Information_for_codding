@@ -16,69 +16,66 @@ bd - дата рождения в следующем формате 15/04/1990
 -i - выводит на экран информацию о человеке с id: name sex (м/ж) bd (формат 15-Apr-1990)
 
 --------
-public static List<Person> allPeople = new ArrayList<Person>();
-
-    static {
-        allPeople.add(Person.createMale("Иванов Иван", new Date()));  //сегодня родился    id=0
-        allPeople.add(Person.createMale("Петров Петр", new Date()));  //сегодня родился    id=1
-    }
-
-    public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String textPerson = reader.readLine();
-        String[] words = textPerson.split(" ");
-        Date date = null;
-        if (words.length > 2) {
-            date = formatDate(words);
-        }
+public static void main(String[] args) throws IOException {
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+//        String textPerson;
+//        while (!(textPerson = reader.readLine()).equals("close")) {
+//            System.out.println("длинна массива: " + allPeople.size());
 
 
-        if (textPerson.contains("-c")) {
-            if (words[words.length - 2].contains("м")) {
-                allPeople.add(Person.createMale(words[1], date));
-                System.out.println("id: " + (allPeople.size() - 1));
-            } else if (words[words.length - 2].contains("ж")) {
-                allPeople.add(Person.createFemale(words[1], date));
-                System.out.println(allPeople.size() - 1);
+//        String textPerson = reader.readLine();
+            String[] words = args;
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+
+
+            if (args[0].contains("-c")) {
+                Date date = null;
+                try {
+                    date = format.parse(words[words.length - 1]);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (words[words.length - 2].contains("м")) {
+                    allPeople.add(Person.createMale(words[1], date));
+                    System.out.println(allPeople.size() - 1);
+//                    System.out.println(allPeople.get(allPeople.size() - 1).getName() + allPeople.get(allPeople.size() - 1).getBirthDate());
+                } else if (words[words.length - 2].contains("ж")) {
+                    allPeople.add(Person.createFemale(words[1], date));
+                    System.out.println(allPeople.size() - 1);
+                }
+//                System.out.println("длинна массива -c: " + allPeople.size());
+
+            } else if (args[0].contains("-u")) {
+                Date date = null;
+                try {
+                    date = format.parse(words[words.length - 1]);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Person upgradePerson = allPeople.get(Integer.parseInt(words[1]));
+                upgradePerson.setBirthDate(date);
+                upgradePerson.setName(words[2]);
+                upgradePerson.setSex(checkSex(words));
+//                System.out.println("длинна массива -u: " + allPeople.size());
+
+            } else if (args[0].contains("-d")) {
+                Person upgradePerson = allPeople.get(Integer.parseInt(words[1]));
+                upgradePerson.setSex(null);
+                upgradePerson.setName(null);
+                upgradePerson.setBirthDate(null);
+//                System.out.println("длинна массива -d: " + allPeople.size());
+
+            } else if (args[0].contains("-i")) {
+                Person upgradePerson = allPeople.get(Integer.parseInt(words[1]));
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+                String sex;
+                sex = (upgradePerson.getSex() == Sex.MALE) ? "м" : "ж";
+                System.out.println(upgradePerson.getName() + " " + sex + " " + dateFormat.format(upgradePerson.getBirthDate()));
+//                System.out.println("длинна массива -i: " + allPeople.size());
             }
-
-        } else if (textPerson.contains("-u")) {
-            Person upgradePerson = allPeople.get(Integer.parseInt(words[1]));
-            upgradePerson.setBirthDate(date);
-            upgradePerson.setName(words[2]);
-            upgradePerson.setSex(checkSex(words));
-
-        } else if (textPerson.contains("-d")) {
-            Person upgradePerson = allPeople.get(Integer.parseInt(words[1]));
-            upgradePerson.setSex(null);
-            upgradePerson.setName(null);
-            upgradePerson.setBirthDate(null);
-
-        } else if (textPerson.contains("-i")) {
-            Person upgradePerson = allPeople.get(Integer.parseInt(words[1]));
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-            String sex;
-            sex = upgradePerson.getSex() == Sex.MALE ? "м" : "ж";
-            System.out.println(upgradePerson.getName() + " " + sex + " " + dateFormat.format(upgradePerson.getBirthDate()));
         }
-    }
+//    }
 
-    public static Date formatDate(String[] words) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-        String newFortmatDate = null;
-        Date date = null;
-
-        try {
-            date = dateFormat.parse(words[words.length - 1]);
-//            dateFormat.applyPattern("dd-MMM-yyyy");
-//            newFortmatDate = dateFormat.format(date);
-//            Date newDate = new Date(newFortmatDate);
-//            System.out.println(newDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date;
-    }
 
     public static Sex checkSex(String[] words) {
         return words[words.length - 2].equals("м") ? Sex.MALE : Sex.FEMALE;
