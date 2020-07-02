@@ -1,0 +1,53 @@
+Самые частые байты
+Ввести с консоли имя файла.
+Найти байт или байты с максимальным количеством повторов.
+Вывести их на экран через пробел.
+Закрыть поток ввода-вывода.
+
+
+Требования:
+1. Программа должна считывать имя файла с консоли.
+2. Для чтения из файла используй поток FileInputStream.
+3. В консоль через пробел должны выводиться все байты из файла с максимальным количеством повторов.
+4. Данные в консоль должны выводится в одну строку.
+5. Поток чтения из файла должен быть закрыт.
+
+public static void main(String[] args) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String address = reader.readLine();
+        Map<Integer, Integer> map = new HashMap<>();
+        List<Integer> arr = new ArrayList<>();
+        FileInputStream inputStream = new FileInputStream(address);
+
+        while (inputStream.available() > 0) {
+            arr.add(inputStream.read());
+        }
+        inputStream.close();
+//        System.out.println(arr);
+        Set<Integer> setInt = new TreeSet<>(arr);
+//        System.out.println(setInt);
+        for (Integer i : setInt) {
+            int count = 0;
+            for (int j = 0; j < arr.size(); j ++) {
+                if (i == arr.get(j)) {
+                    count ++;
+                }
+            }
+            map.put(i, count);
+        }
+//        System.out.println(map);
+        setInt.clear();
+//        System.out.println(setInt);
+        for (Map.Entry<Integer, Integer> test : map.entrySet()) {
+            setInt.add(test.getValue());
+        }
+//        System.out.println(setInt);
+        arr.clear();
+        arr.addAll(setInt);
+        Collections.sort(arr);
+        for (Map.Entry<Integer, Integer> testMap : map.entrySet()) {
+            if (arr.get(arr.size() - 1) == testMap.getValue()) {
+                System.out.print(testMap.getKey() + " ");
+            }
+        }
+    }
