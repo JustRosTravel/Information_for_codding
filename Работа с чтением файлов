@@ -1,0 +1,32 @@
+Требования:
+1. Программа должна два раза считать имена файлов с консоли.
+2. Не используй в программе статические переменные.
+3. Для первого файла создай поток для чтения и считай его содержимое.
+4. Затем, для первого файла создай поток для записи(поток для записи должен быть один). Для второго - для чтения.
+5. Содержимое первого и второго файла нужно объединить в первом файле.
+6. Сначала должно идти содержимое второго файла, затем содержимое первого.
+7. Созданные для файлов потоки должны быть закрыты.
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String text_1 = reader.readLine();
+        FileInputStream fileInputStream_1 = new FileInputStream(text_1);
+        FileInputStream fileInputStream_2 = new FileInputStream(reader.readLine());
+
+        byte[] file_1 = new byte[fileInputStream_1.available()];
+        int firstFile = fileInputStream_1.read(file_1);
+        byte[] file_2 = new byte[fileInputStream_2.available()];
+        int secondFile = fileInputStream_2.read(file_2);
+
+        FileOutputStream fileOutputStream = new FileOutputStream(text_1);
+
+        fileOutputStream.write(file_2, 0, secondFile);
+        fileOutputStream.write(file_1, 0, firstFile);
+
+        fileInputStream_1.close();
+        fileInputStream_2.close();
+        fileOutputStream.close();
+    }
+}
