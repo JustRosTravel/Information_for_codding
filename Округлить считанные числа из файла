@@ -1,0 +1,39 @@
+Считать с консоли 2 имени файла.
+Первый файл содержит вещественные(дробные) числа, разделенные пробелом. Например, 3.1415.
+Округлить числа до целых и записать через пробел во второй файл.
+Закрыть потоки.
+1. Программа должна два раза считать имена файлов с консоли.
+2. Для первого файла создай поток для чтения. Для второго - поток для записи.
+3. Считать числа из первого файла, округлить их и записать через пробел во второй.
+4. Должны соблюдаться принципы округления, указанные в задании.
+5. Созданные для файлов потоки должны быть закрыты.
+
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String fileName_1 = reader.readLine();
+        String fileName_2 = reader.readLine();
+        List<String[]> arr = new ArrayList<>();
+        reader.close();
+        
+        try (BufferedReader read = new BufferedReader(new InputStreamReader(new FileInputStream(fileName_1)))) {
+            String data;
+            while ((data = read.readLine()) != null) {
+                arr.add(data.split(" ")); // каждую строчку преобразуем учитывая пробелы между числами. Получаем в коллекции массив из чисел
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName_2));
+        for (String[] s : arr) {
+            for (String test : s) {
+                writer.write(Math.round(Double.parseDouble(test)) + " ");
+            }
+
+        }
+        writer.close();
+
+    }
+}
