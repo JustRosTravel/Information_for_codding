@@ -1,0 +1,71 @@
+1. Программа должна считывать имена файлов с консоли, пока не будет введено слово "exit".
+2. Для каждого файла создай нить ReadThread и запусти ее.
+3. После запуска каждая нить ReadThread должна создать свой поток для чтения из файла.
+4. Затем нити должны найти максимально встречающийся байт в своем файле и добавить его в словарь resultMap.
+5. Поток для чтения из файла в каждой нити должен быть закрыт.
+
+public class Solution {
+    public static Map<String, Integer> resultMap = new TreeMap<>();
+
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String address;
+        while (true) {
+            if (!(address = reader.readLine()).equals("exit")) {
+                ReadThread start_read_line = new ReadThread(address);
+                start_read_line.start();
+            } else {
+                break;
+            }
+        }
+        reader.close();
+
+    }
+
+    public static class ReadThread extends Thread {
+        String fileName;
+        private Map<Integer, Integer> mapInputStream = new TreeMap<>();
+        private List<Integer> listArr = new ArrayList<>();
+        private List<Integer> listArrSortNumber = new ArrayList<>();
+
+        public ReadThread(String fileName) {
+            this.fileName = fileName;
+        }
+
+        public void run() {
+            int bytes;
+            try {
+                FileInputStream inputStream = new FileInputStream(this.fileName);
+                while (inputStream.available() > 0) {
+                    bytes = inputStream.read();
+                    mapInputStream.put(bytes, 0);
+                    listArr.add(bytes);
+                }
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            for (Map.Entry<Integer, Integer> test : mapInputStream.entrySet()) {
+                int count = 0;
+                for (Integer i : listArr) {
+                    if (test.getKey() == i) {
+                        count++;
+                    }
+                }
+                mapInputStream.put(test.getKey(), count);
+                listArrSortNumber.add(count);
+            }
+            Collections.sort(listArrSortNumber);
+            for (Map.Entry<Integer, Integer> testMap : mapInputStream.entrySet()) {
+                if (testMap.getValue() == listArrSortNumber.get(listArrSortNumber.size() - 1)) {
+                    resultMap.put(this.fileName, testMap.getKey());
+                }
+            }
+
+//            System.out.println(mapInputStream);
+//            System.out.println(resultMap);
+        }
+    }
+}
