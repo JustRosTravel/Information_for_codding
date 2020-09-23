@@ -1,0 +1,38 @@
+1. Программа должна считывать имена файлов с консоли, пока не будет введено слово "end".
+Каждый файл имеет имя: [someName].partN.
+Например, Lion.avi.part1, Lion.avi.part2, ..., Lion.avi.part37.
+2. Создай поток для записи в файл без суффикса [.partN] в папке, где находятся все считанные файлы.
+3. В новый файл перепиши все байты из файлов-частей *.partN.
+4. Чтение и запись должны происходить с использованием буфера.
+5. Созданные для файлов потоки должны быть закрыты.
+6. Не используй статические переменные.
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedOutputStream outputStream;
+        BufferedInputStream inputStream = null;
+        List<String> listArr = new ArrayList<>();
+        Map<Integer, String> map_arr = new TreeMap<>();
+        String text;
+
+        while (!(text = reader.readLine()).equals("end")) listArr.add(text);
+        reader.close();
+
+        String[] s = listArr.get(0).split(".part", 2);
+        outputStream = new BufferedOutputStream(new FileOutputStream(s[0]));
+
+
+        for (String textList : listArr) {
+            map_arr.put(Integer.parseInt(textList.substring(listArr.get(0).indexOf(".part") + 5)), textList);
+        }
+
+        for (Map.Entry<Integer, String> testMap : map_arr.entrySet()) {
+            inputStream = new BufferedInputStream(new FileInputStream(testMap.getValue()));
+            byte[] data = new byte[inputStream.available()];
+            outputStream.write(data, 0, inputStream.read(data));
+            inputStream.close();
+        }
+        outputStream.close();
+    }
+}
