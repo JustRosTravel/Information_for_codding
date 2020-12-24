@@ -1,0 +1,46 @@
+Дублируем текст
+Считай с консоли имя файла.
+В методе main подмени объект System.out написанной тобой ридер-оберткой по аналогии с лекцией.
+Твоя ридер-обертка должна выводить весь текст и на консоль и в файл, имя которого ты считал.
+Вызови готовый метод printSomething(), воспользуйся testString.
+Верни переменной System.out первоначальный поток.
+Закрой поток файла.
+
+public class Solution {
+    public static TestString testString = new TestString();
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String address = reader.readLine();
+        reader.close();
+
+        PrintStream oldStream = System.out;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream nStream = new PrintStream(outputStream);
+        System.setOut(nStream);
+
+        testString.printSomething();
+
+        String result = outputStream.toString();
+        writeToFile(result, address);
+
+        System.setOut(oldStream);
+        System.out.println(result);
+    }
+
+    public static class TestString {
+        public void printSomething() {
+            System.out.println("it's a text for testing");
+        }
+    }
+
+    public static void writeToFile(String result, String address) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(address)) {
+            byte[] arr = result.getBytes();
+            fileOutputStream.write(arr, 0, arr.length);
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+}
